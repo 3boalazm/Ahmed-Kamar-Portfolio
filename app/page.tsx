@@ -1,54 +1,61 @@
 import { Hero } from "@/features/hero/hero";
-import { FeaturedCases, ExperienceLedger } from "@/features/work/featured-cases";
+import { FeaturedCases } from "@/features/work/featured-cases";
+import { AnalysisBand } from "@/features/home/analysis-band";
 import { WhyValue } from "@/features/home/why-value";
-import { Method } from "@/features/home/method";
-import { AboutTeaser, SkillsMarquee, SkillSheet } from "@/features/home/practice";
-import { Faq, ContactCta } from "@/features/home/faq-contact";
+import { MethodStrip } from "@/features/home/method";
+import { AboutTeaser, SkillsMarquee } from "@/features/home/practice";
+import { CtaBand } from "@/features/home/faq-contact";
 import { Marker } from "@/components/ui/marker";
 import { Reveal } from "@/components/ui/reveal";
 import { l } from "@/lib/content";
 
 /**
- * HOME — the OS's six-beat narrative, in the same order:
- * clarity (hero) → proof → why → method → background → objections → CTA.
+ * HOME — the OS's narrative, in the same order, but every band is now a
+ * teaser that opens its own page (/work, /method, /about, /contact):
+ * clarity → proof → analysis → why → method → background → CTA.
  */
 export default function Home() {
   return (
     <main>
-      {/* 00 · Immediate clarity */}
       <Hero />
 
-      {/* 01 · Proof first */}
-      <section id="work" className="narrative-section narrative-section--proof">
+      <section className="narrative-section narrative-section--proof">
         <div className="container-wide">
           <Marker index="01" label={l("SELECTED WORK", "أعمال مختارة")} />
         </div>
         <FeaturedCases />
-        <ExperienceLedger />
       </section>
 
-      {/* 02 · Why this approach */}
-      <section id="why" className="narrative-section narrative-section--proof">
+      <section className="narrative-section narrative-section--proof">
         <div className="container-wide">
-          <Marker index="02" label={l("WHY / VALUE", "لماذا / القيمة")} />
+          <Marker index="02" label={l("ANALYSIS / SAMPLE", "التحليل / نموذج")} />
+        </div>
+        <Reveal>
+          <AnalysisBand />
+        </Reveal>
+      </section>
+
+      <section className="narrative-section narrative-section--proof">
+        <div className="container-wide">
+          <Marker index="03" label={l("WHY / VALUE", "لماذا / القيمة")} />
         </div>
         <Reveal>
           <WhyValue />
         </Reveal>
       </section>
 
-      {/* 03 · Method */}
-      <section id="method" className="narrative-section narrative-section--process">
+      <section className="narrative-section narrative-section--process">
         <div className="container-wide">
-          <Marker index="03" label={l("METHOD / PROCESS", "المنهج / العملية")} />
+          <Marker index="04" label={l("METHOD / PROCESS", "المنهج / العملية")} />
         </div>
-        <Method />
+        <Reveal>
+          <MethodStrip />
+        </Reveal>
       </section>
 
-      {/* 04 · Background & practice */}
-      <section id="background" className="narrative-section narrative-section--about">
+      <section className="narrative-section narrative-section--about">
         <div className="container-wide">
-          <Marker index="04" label={l("PRACTICE / BACKGROUND", "الممارسة / الخلفية")} />
+          <Marker index="05" label={l("PRACTICE / BACKGROUND", "الممارسة / الخلفية")} />
         </div>
         <Reveal>
           <AboutTeaser />
@@ -57,26 +64,14 @@ export default function Home() {
         <Reveal delay={50}>
           <SkillsMarquee />
         </Reveal>
-        <SkillSheet />
       </section>
 
-      {/* 05 · FAQ */}
-      <section id="faq" className="narrative-section narrative-section--about">
-        <div className="container-wide">
-          <Marker index="05" label={l("FAQ / BEFORE START", "أسئلة / قبل البداية")} />
-        </div>
-        <Reveal>
-          <Faq />
-        </Reveal>
-      </section>
-
-      {/* 06 · Call to action */}
-      <section id="contact" className="narrative-section narrative-section--cta">
+      <section className="narrative-section narrative-section--cta">
         <div className="container-wide">
           <Marker index="06" label={l("NEXT / CONTACT", "التالي / تواصل")} />
         </div>
         <Reveal>
-          <ContactCta />
+          <CtaBand />
         </Reveal>
       </section>
     </main>

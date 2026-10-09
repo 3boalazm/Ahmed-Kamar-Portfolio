@@ -32,16 +32,88 @@ export const SITE = {
     (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:4300"),
   /** Printable CV page. Swap for a real PDF path (e.g. "/Ahmed-Kamar-CV.pdf") once uploaded to /public. */
   cv: "/cv",
+  portrait: "/images/ahmed.webp",
+  avatar: "/images/ahmed-avatar.webp",
 } as const;
 
 /* ═════════ NAVIGATION ═════════ */
-export const NAV_LINKS: readonly { id: string; label: L }[] = [
-  { id: "work", label: l("WORK", "الأعمال") },
-  { id: "why", label: l("WHY", "لماذا") },
-  { id: "method", label: l("METHOD", "المنهج") },
-  { id: "background", label: l("BACKGROUND", "الخلفية") },
-  { id: "faq", label: l("FAQ", "أسئلة") },
+export const NAV_LINKS: readonly { href: string; label: L }[] = [
+  { href: "/about", label: l("ABOUT", "نبذة") },
+  { href: "/work", label: l("WORK", "الأعمال") },
+  { href: "/skills", label: l("SKILLS", "المهارات") },
+  { href: "/method", label: l("METHOD", "المنهج") },
 ];
+
+/** Secondary set — carried by the mobile panel and the footer. */
+export const NAV_MORE: readonly { href: string; label: L }[] = [
+  { href: "/contact#faq", label: l("FAQ", "أسئلة") },
+  { href: "/cv", label: l("CV ↓", "السيرة الذاتية ↓") },
+];
+
+/** Inner-page headers (kicker · title · sub). */
+export const PAGES = {
+  about: {
+    index: "01",
+    kicker: l("ABOUT", "نبذة"),
+    title: { en: ["Data work built on ", "real platforms."], ar: ["شغل بيانات على ", "منصات حقيقية."] },
+    sub: l(
+      "Who I am, where I have worked, and what I bring to a data team.",
+      "من أنا، وأين عملت، وما الذي أضيفه لفريق بيانات.",
+    ),
+  },
+  work: {
+    index: "02",
+    kicker: l("SELECTED WORK", "أعمال مختارة"),
+    title: { en: ["Case files from ", "delivery, retail, and code."], ar: ["ملفات حالات من ", "التوصيل والتجزئة والكود."] },
+    sub: l(
+      "Context, what I did, and the domain behind each piece of work. Client work is summarized under NDA.",
+      "السياق، وما نفّذته، والمجال وراء كل عمل. أعمال العملاء ملخّصة بسبب اتفاقية السرية.",
+    ),
+  },
+  skills: {
+    index: "03",
+    kicker: l("SKILLS", "المهارات"),
+    title: { en: ["The toolkit, ", "with honest levels."], ar: ["الأدوات، ", "بمستويات صادقة."] },
+    sub: l(
+      "What I use, how well I use it, and what I can take on for your team.",
+      "ما أستخدمه، ومستوى إتقاني له، وما أقدر أتولاه لفريقك.",
+    ),
+  },
+  method: {
+    index: "04",
+    kicker: l("METHOD", "المنهج"),
+    title: { en: ["From a question ", "to something usable."], ar: ["من سؤال ", "لشيء قابل للاستخدام."] },
+    sub: l(
+      "The principles behind the work, and the four stages every analysis moves through.",
+      "المبادئ وراء الشغل، والمراحل الأربع التي يمر بها كل تحليل.",
+    ),
+  },
+  contact: {
+    index: "05",
+    kicker: l("CONTACT", "تواصل"),
+    title: { en: ["Have data that needs ", "an answer?"], ar: ["عندك بيانات محتاجة ", "إجابة؟"] },
+    sub: l(
+      "Open to roles in Egypt, the Gulf, or remote. Email is the fastest way to reach me.",
+      "متاح لفرص في مصر أو الخليج أو عن بُعد. الإيميل أسرع وسيلة للتواصل معي.",
+    ),
+  },
+} as const;
+
+/** Home teaser copy (each band links to its full page). */
+export const HOME = {
+  work: { kicker: l("SELECTED WORK", "أعمال مختارة"), all: l("All case files", "كل ملفات الحالات") },
+  analysis: {
+    kicker: l("WHAT I ANALYZE", "ما أحلّله"),
+    title: { en: ["Three questions, ", "answered with data."], ar: ["ثلاثة أسئلة، ", "تُجاب بالبيانات."] },
+    body: l(
+      "Sales by day, price against commission, and what customers think of delivery. This board is a sample — it shows the shape of the analysis, not client numbers.",
+      "المبيعات حسب اليوم، والسعر مقابل العمولة، ورأي العملاء في التوصيل. هذه اللوحة نموذج — تُظهر شكل التحليل لا أرقام العملاء.",
+    ),
+    hint: l("Hover a bar or the line to read it.", "مرّر على عمود أو الخط لقراءته."),
+  },
+  method: { link: l("See the full method", "شوف المنهج كاملًا") },
+  about: { link: l("Read the about page", "اقرأ صفحة النبذة") },
+};
 
 /* ═════════ HERO ═════════ */
 export const HERO = {
@@ -61,6 +133,11 @@ export const HERO = {
   ctaGithub: l("GitHub", "جيت هب"),
   hiring: l("For hiring teams", "للشركات والتوظيف"),
   query: "SELECT answers FROM data WHERE teams_can_act = TRUE;",
+  portraitAlt: l("Portrait of Ahmed Kamar", "صورة أحمد قمر"),
+  chips: [
+    { k: l("NOW", "الآن"), v: l("Data Analyst · HungerStation", "محلل بيانات · هنجرستيشن") },
+    { k: l("CORE", "الأساس"), v: l("SQL · Advanced", "SQL · متقدم") },
+  ],
 };
 
 export const METRICS_HEADING = l("ROLE SCOPE & CORE SKILL", "نطاق العمل والمهارة الأساسية");
@@ -389,6 +466,26 @@ export const ABOUT = {
     ),
   ],
   link: l("Download the CV", "حمّل السيرة الذاتية"),
+  educationHeading: l("EDUCATION & TRAINING", "التعليم والتدريب"),
+  education: [
+    {
+      year: "2025",
+      title: l("B.Sc. Computers and Information", "بكالوريوس حاسبات ومعلومات"),
+      org: l("Benha University", "جامعة بنها"),
+      note: l("Graduation project: Sign Language Interpreter — database models and server link.", "مشروع التخرج: مترجم لغة الإشارة — نماذج قاعدة البيانات وربطها بالسيرفر."),
+    },
+    {
+      year: "—",
+      title: l("Backend Development Course", "كورس Backend Development"),
+      org: l("Route Academy", "Route Academy"),
+      note: l("Server-side fundamentals that sit behind the database work.", "أساسيات الـ server-side التي تقف خلف شغل قواعد البيانات."),
+    },
+  ],
+  languagesHeading: l("LANGUAGES", "اللغات"),
+  languages: [
+    { name: l("Arabic", "العربية"), level: l("Native", "اللغة الأم"), value: 5 },
+    { name: l("English", "الإنجليزية"), level: l("B1", "B1"), value: 3 },
+  ],
   facts: [
     { k: l("SPECIALTY", "التخصص"), v: l("Restaurant, retail & delivery-platform data", "بيانات المطاعم والتجزئة ومنصات التوصيل") },
     { k: l("CURRENT ROLE", "العمل الحالي"), v: l("Data Analyst, HungerStation", "محلل بيانات، هنجرستيشن") },
@@ -536,16 +633,17 @@ export const FOOTER = {
     {
       head: l("EXPLORE", "استكشف"),
       links: [
-        { label: l("Selected work", "أعمال مختارة"), href: "#work" },
-        { label: l("Why this approach", "لماذا هذا الأسلوب"), href: "#why" },
-        { label: l("Method", "المنهج"), href: "#method" },
-        { label: l("Background & skills", "الخلفية والمهارات"), href: "#background" },
-        { label: l("FAQ", "أسئلة"), href: "#faq" },
+        { label: l("About", "نبذة"), href: "/about" },
+        { label: l("Work", "الأعمال"), href: "/work" },
+        { label: l("Skills", "المهارات"), href: "/skills" },
+        { label: l("Method", "المنهج"), href: "/method" },
+        { label: l("FAQ", "أسئلة"), href: "/contact#faq" },
       ],
     },
     {
       head: l("REACH", "تواصل"),
       links: [
+        { label: l("Contact", "تواصل"), href: "/contact" },
         { label: l("Email ↗", "إيميل ↗"), href: `mailto:${SITE.email}` },
         { label: l("LinkedIn ↗", "لينكدإن ↗"), href: SITE.linkedin },
         { label: l("GitHub ↗", "جيت هب ↗"), href: SITE.github },

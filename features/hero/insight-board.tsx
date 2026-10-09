@@ -229,7 +229,7 @@ export function InsightBoard() {
 
   return (
     <div
-      className="overflow-hidden rounded-panel border border-border-default bg-surface-1 shadow-panel"
+      className="glass-strong edge-light overflow-hidden rounded-panel shadow-panel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -241,7 +241,7 @@ export function InsightBoard() {
           <i className="size-2.5 rounded-full bg-mint/70" />
         </span>
         <span className="font-mono text-micro text-text-tertiary" dir="ltr">{BOARD.file}</span>
-        <span className="ms-auto rounded-card border border-accent-24 bg-accent-08 px-2 py-0.5 font-mono text-caption uppercase tracking-[0.1em] text-accent-text">
+        <span className="ms-auto rounded-pill border border-accent-24 bg-accent-08 px-2 py-0.5 font-mono text-caption uppercase tracking-[0.1em] text-accent-text">
           {ar ? "نموذج" : "SAMPLE"}
         </span>
       </div>
@@ -296,7 +296,7 @@ export function InsightBoard() {
           </p>
         )}
       </div>
-      <p className="border-t border-border-subtle bg-surface-0/40 px-4 py-1.5 text-center font-mono text-caption uppercase tracking-[0.1em] text-text-ghost">
+      <p className="border-t border-border-subtle bg-surface-0/30 px-4 py-1.5 text-center font-mono text-caption uppercase tracking-[0.1em] text-text-ghost">
         {t(BOARD.disclaimer)}
       </p>
     </div>

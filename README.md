@@ -1,7 +1,7 @@
 # Ahmed Kamar — Data Analyst Portfolio
 
 Mini edition of the Aboalazm OS architecture, rebuilt for a data practice.
-Single page · EN / AR (RTL) · dark / light · printable CV · SQL console easter egg.
+Multi-page (home · about · work · skills · method · contact · cv) · EN / AR (RTL) · dark / light · OS floating glass nav · portrait · printable CV · SQL console easter egg.
 
 **Stack:** Next.js 15 (App Router) · TypeScript strict · Tailwind v4 · self-hosted fonts (Fontsource) · no runtime deps beyond React/Next.
 
@@ -15,14 +15,14 @@ npm run build && npm start
 
 | | Aboalazm OS | This site |
 |---|---|---|
-| Page order | Hero → Work → Why → Method → Background → FAQ → CTA | **Same six beats, same numbered `01–06` markers** |
-| Chrome | Floating pill nav, footer columns, scroll progress | Report toolbar (worksheet-tab links), same footer anatomy |
+| Page order | Hero → Work → Why → Method → Background → FAQ → CTA | **Same narrative on the home page, numbered `01–06`; every band opens its own page** |
+| Chrome | Floating pill nav, footer columns, scroll progress | **Same floating glass pill nav** (portrait orb), same footer anatomy, same glass + edge-light surfaces |
 | Tokens | `globals.css @theme`, semantic utilities, 1 easing curve | Same system (`bg-surface-1`, `text-text-secondary`, `ease-physics`) |
 | Canvas / accent | Obsidian + Coral | **Midnight Navy + Signal Amber** (CV navy) |
 | Type | GC Epicpro · Montserrat · Thmanyah | **Bricolage Grotesque · IBM Plex Sans/Mono · IBM Plex Arabic** |
 | Emphasis | Italic coral | Marker highlight (works in Arabic) |
 | Atmosphere | Grain + glow | Blueprint grid + chart-axis ticks |
-| Shapes | Pills, 12/24px radii | Rectangular, 6/10px radii |
+| Shapes | Pills, 12/24px radii | Same pills and 12/24px radii (glass), navy/amber palette |
 | Hero visual | System constellation | **Insight board** — live bar / line / ratings charts (sample data, labelled) |
 | Easter egg | Ctrl+` terminal | **Ctrl+` SQL console** — `select * from skills;` |
 | Colour roles | Cyan / mint / pink | Sky = query · Mint = clean · Violet = analyze · Rose = flag |
@@ -33,9 +33,9 @@ Everything user-facing lives in **`lib/content.ts`** (every string is `{ en, ar 
 Design tokens live in **`app/globals.css`**.
 
 ```
-app/            page.tsx (the six sections) · cv/ (printable CV) · layout.tsx
+app/            page.tsx (home) · about/ work/ skills/ method/ contact/ · cv/ (printable CV) · layout.tsx
 components/     layout/ (nav, footer) · ui/ · terminal/ (SQL console) · providers/prefs
-features/       hero/ · work/ (cases + ledger) · home/ (why, method, practice, faq/contact)
+features/       hero/ · work/ (cards, case files, ledger) · home/ (why, method, practice, about, faq/contact)
 lib/            content.ts · utils.ts
 ```
 
@@ -66,7 +66,7 @@ and change `SITE.cv` in `lib/content.ts`.
    CV facts but are authored wording.
 6. **Insight board** is illustrative sample data (labelled on screen) — not client data.
 7. **Links** (LinkedIn, GitHub, email) were taken from the brief and not click-tested.
-8. **Missing assets:** professional photo (optional), Sign Language screenshots/demo,
+8. **Photo:** `public/images/ahmed.webp` (hero/about) and `ahmed-avatar.webp` (nav orb) are cropped from the supplied portrait. **Missing assets:** Sign Language screenshots/demo,
    certificates (none added), a recommendation quote (none invented).
 
 ## Deploy on Vercel

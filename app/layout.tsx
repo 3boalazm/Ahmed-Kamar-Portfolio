@@ -34,6 +34,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     locale: "en_US",
     alternateLocale: "ar_EG",
+    images: [{ url: SITE.portrait, alt: "Ahmed Kamar" }],
   },
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
@@ -51,6 +52,7 @@ const personSchema = {
   "@type": "Person",
   name: SITE.name,
   jobTitle: "Data Analyst",
+  image: `${SITE.url}${SITE.avatar}`,
   email: SITE.email,
   url: SITE.url,
   sameAs: [SITE.linkedin, SITE.github],
@@ -73,6 +75,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </noscript>
       </head>
       <body>
+        <div className="ambient" aria-hidden />
         <PrefsProvider>
           <ScrollProgress />
           <Nav />

@@ -1,167 +1,146 @@
 "use client";
 
 /**
- * REPORT TOOLBAR — the data-site take on the OS's floating pill nav.
- * Same job (brand · sections · lang · theme · primary CTA · mobile
- * panel), different anatomy: a full-width glass bar whose section links
- * behave like worksheet tabs (amber tab-rule on the active one).
+ * FLOATING PILL NAV — the OS navigation, carried over 1:1 in structure:
+ * brand orb · section links with an amber underline + active dot · AR/EN
+ * flip · theme flip · primary CTA · glass mobile panel. The orb is
+ * Ahmed's portrait. Active state follows the route (multi-page).
  */
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { usePrefs } from "@/components/providers/prefs";
-import { NAV_LINKS, SITE, l } from "@/lib/content";
-import { BrandMark } from "@/components/ui/brand-mark";
+import { NAV_LINKS, NAV_MORE, SITE } from "@/lib/content";
+import { BrandOrb } from "@/components/ui/brand-orb";
 import { Icon } from "@/components/ui/icon";
 import { Arrow } from "@/components/ui/arrow";
 import { btn } from "@/components/ui/button";
 import { cx } from "@/lib/utils";
-
-const SECTION_IDS = [...NAV_LINKS.map((n) => n.id), "contact"];
 
 export function Nav() {
   const { t, ar, theme, toggleLang, toggleTheme } = usePrefs();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<string>("");
-
-  const home = pathname === "/";
-  const base = home ? "" : "/";
 
   useEffect(() => {
-    if (!home) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      setScrolled(window.scrollY > 24);
-      let current = "";
-      for (const id of SECTION_IDS) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= 140) current = id;
-      }
-      setActive(current);
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
+    const onScroll = () => setScrolled(window.scrollY > 64);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [home]);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => setOpen(false), [pathname]);
 
   if (pathname.startsWith("/cv")) return null;
 
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href.split("#")[0]!));
+
   return (
-    <header className="no-print fixed inset-x-0 top-0 z-50">
+    <nav
+      aria-label={ar ? "التنقل الرئيسي" : "Primary"}
+      className="no-print fixed left-1/2 top-2 z-50 w-max max-w-[calc(100vw-16px)] -translate-x-1/2"
+    >
       <div
         className={cx(
-          "glass border-x-0 border-t-0 transition-shadow duration-500 ease-physics",
+          "glass flex items-center gap-2 rounded-pill py-1 ps-3 pe-1 transition-shadow duration-500 ease-physics md:gap-3",
           scrolled || open ? "shadow-card" : "shadow-none",
         )}
       >
-        <nav aria-label={ar ? "التنقل الرئيسي" : "Primary"} className="container-wide flex h-14 items-center gap-3">
-          <a href={home ? "#top" : "/"} className="flex items-center gap-2.5" aria-label={SITE.short}>
-            <BrandMark />
-            <span className="hidden font-display text-subtitle leading-none tracking-[-0.02em] sm:block">
-              Ahmed <span className="text-accent-text">Kamar</span>
-            </span>
-          </a>
+        <Link href="/" aria-label={SITE.short} className="flex items-center gap-2">
+          <BrandOrb size={32} alt={SITE.short} />
+          <span className="hidden font-display text-subtitle leading-none tracking-[-0.02em] sm:block" aria-hidden>
+            A<span className="text-accent-text">K</span>
+          </span>
+        </Link>
 
-          <ul className="ms-6 hidden items-stretch self-stretch md:flex" role="list">
-            {NAV_LINKS.map((link) => {
-              const isActive = active === link.id;
-              return (
-                <li key={link.id} className="relative flex">
-                  <a
-                    href={`${base}#${link.id}`}
-                    aria-current={isActive ? "location" : undefined}
-                    className={cx(
-                      "relative flex items-center px-3 font-mono text-caption uppercase tracking-[0.1em] transition-colors duration-300",
-                      isActive ? "text-text-primary" : "text-text-tertiary hover:text-text-secondary",
-                    )}
-                  >
-                    {t(link.label)}
-                    <span
-                      aria-hidden
-                      className={cx(
-                        "absolute inset-x-2 bottom-0 h-0.5 origin-center bg-accent transition-transform duration-500 ease-physics",
-                        isActive ? "scale-x-100" : "scale-x-0",
-                      )}
-                    />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="ms-auto flex items-center gap-2">
-            <button
-              type="button"
-              onClick={toggleLang}
-              aria-label={ar ? "Switch to English" : "التبديل إلى العربية"}
-              className="grid h-8 min-w-8 place-items-center rounded-card border border-border-subtle px-2 font-mono text-micro text-text-secondary transition-colors duration-300 hover:border-border-strong hover:text-text-primary"
-            >
-              {ar ? "EN" : <span style={{ fontFamily: "var(--font-sans)", fontSize: "0.95rem", lineHeight: 1 }}>ع</span>}
-            </button>
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              className="grid size-8 place-items-center rounded-card border border-border-subtle text-text-secondary transition-colors duration-300 hover:border-border-strong hover:text-text-primary"
-            >
-              <Icon name={theme === "dark" ? "sun" : "moon"} size={14} />
-            </button>
-            <a href={`${base}#contact`} className={btn("primary", "hidden px-3 py-1.5 text-caption sm:inline-flex")}>
-              {ar ? "تواصل" : "CONTACT"}
-              <Arrow size={12} className="transition-transform duration-300 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
-            </a>
-            <button
-              type="button"
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
-              onClick={() => setOpen((v) => !v)}
-              className="grid size-8 place-items-center rounded-card text-text-secondary hover:text-text-primary md:hidden"
-            >
-              <Icon name={open ? "x" : "menu"} size={18} />
-            </button>
-          </div>
-        </nav>
-
-        {open && (
-          <div id="mobile-menu" className="container-wide border-t border-border-subtle pb-3 pt-2 md:hidden">
-            <ul className="flex flex-col" role="list">
-              {[...NAV_LINKS, { id: "contact", label: l("CONTACT", "تواصل") }].map((link, i) => (
-                <li key={link.id}>
-                  <a
-                    href={`${base}#${link.id}`}
-                    onClick={() => setOpen(false)}
-                    className={cx(
-                      "flex items-center justify-between border-b border-border-subtle py-3 font-mono text-label uppercase tracking-[0.08em]",
-                      active === link.id ? "text-accent-text" : "text-text-secondary",
-                    )}
-                  >
-                    <span>
-                      <span className="text-text-ghost">{String(i + 1).padStart(2, "0")}</span>
-                      <span className="ms-3">{t(link.label)}</span>
-                    </span>
-                    <Arrow size={14} />
-                  </a>
-                </li>
-              ))}
-              <li>
-                <a href={SITE.cv} className={btn("secondary", "mt-3 w-full")}>
-                  {ar ? "تحميل السيرة الذاتية" : "Download CV"}
-                  <Icon name="arrow-down" size={14} />
-                </a>
+        <ul className="hidden items-center gap-2 md:flex" role="list">
+          {NAV_LINKS.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <li key={link.href} className="relative">
+                <Link
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cx(
+                    "group relative block px-2 py-1 font-display text-caption uppercase tracking-[0.08em] transition-colors duration-500 ease-physics",
+                    active ? "text-text-primary" : "text-text-tertiary hover:text-text-secondary",
+                  )}
+                >
+                  {t(link.label)}
+                  <span className="absolute inset-x-1 -bottom-px h-px origin-left scale-x-0 bg-accent transition-transform duration-700 ease-physics group-hover:scale-x-100" />
+                </Link>
+                {active && <span className="absolute -bottom-0.5 left-1/2 size-1 -translate-x-1/2 rounded-pill bg-accent" />}
               </li>
-            </ul>
-          </div>
-        )}
+            );
+          })}
+        </ul>
+
+        <button
+          type="button"
+          onClick={toggleLang}
+          aria-label={ar ? "Switch to English" : "التبديل إلى العربية"}
+          className="rounded-pill border border-border-subtle px-2 py-1 font-mono text-micro text-text-secondary transition-colors duration-500 ease-physics hover:border-border-strong hover:text-text-primary"
+        >
+          {ar ? "EN" : <span style={{ fontFamily: "var(--font-sans)", fontSize: "1rem", lineHeight: 1, fontWeight: 500 }}>ع</span>}
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="grid size-7 place-items-center rounded-pill border border-border-subtle text-text-secondary transition-colors duration-500 ease-physics hover:border-border-strong hover:text-text-primary"
+        >
+          <Icon name={theme === "dark" ? "sun" : "moon"} size={14} />
+        </button>
+
+        <Link
+          href="/contact"
+          className={btn("primary", "group whitespace-nowrap px-3 py-1 font-display text-caption tracking-[0.06em]")}
+        >
+          {ar ? "تواصل" : "CONTACT"}
+          <Arrow size={12} className="hidden transition-transform duration-500 ease-physics group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 sm:inline-flex" />
+        </Link>
+
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((v) => !v)}
+          className="grid size-8 place-items-center rounded-pill text-text-secondary transition-colors duration-500 ease-physics hover:text-text-primary md:hidden"
+        >
+          <Icon name={open ? "x" : "menu"} size={16} />
+        </button>
       </div>
-    </header>
+
+      {open && (
+        <ul
+          id="mobile-menu"
+          role="list"
+          className="glass fade-up mt-1 flex max-h-[calc(100svh-5.5rem)] flex-col overflow-y-auto overscroll-contain rounded-panel p-2 shadow-card md:hidden"
+        >
+          {[{ href: "/", label: { en: "HOME", ar: "الرئيسية" } }, ...NAV_LINKS, ...NAV_MORE].map((link) => {
+            const label = t(link.label);
+            const download = label.endsWith("↓");
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className={cx(
+                    "flex items-center gap-1.5 rounded-card px-2 py-2.5 font-display text-micro uppercase tracking-[0.08em] transition-colors duration-500 ease-physics",
+                    isActive(link.href) ? "text-accent-text" : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
+                  )}
+                >
+                  {label.replace(/\s*↓$/, "")}
+                  {download && <Icon name="arrow-down" size={13} className="text-text-ghost" />}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </nav>
   );
 }

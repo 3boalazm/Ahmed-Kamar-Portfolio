@@ -193,7 +193,7 @@ export function SqlConsole() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Open SQL console"
-          className="no-print fixed bottom-4 end-4 z-40 inline-flex items-center gap-2 rounded-card border border-border-default bg-surface-1/90 px-3 py-2 font-mono text-caption uppercase tracking-[0.1em] text-text-secondary shadow-card backdrop-blur transition-[border-color,color,transform] duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent-text"
+          className="no-print fixed bottom-4 end-4 z-40 inline-flex items-center gap-2 glass rounded-pill px-3.5 py-2 font-mono text-caption uppercase tracking-[0.1em] text-text-secondary shadow-card transition-[border-color,color,transform] duration-500 hover:-translate-y-0.5 hover:border-accent hover:text-accent-text"
           dir="ltr"
         >
           <Icon name="terminal" size={14} />

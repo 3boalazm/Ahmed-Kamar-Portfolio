@@ -2,37 +2,77 @@
 
 /**
  * HERO — same viewport architecture as the OS (status row → statement
- * headline → lead + two CTAs → signature visual → metric band), rebuilt
- * for a data practice: blueprint grid instead of grain, marker emphasis
- * instead of italic, a live insight board instead of the constellation.
+ * headline → lead + CTAs → signature asset → metric band). The signature
+ * asset is now Ahmed's portrait in a glass frame with floating readout
+ * chips; the live insight board moved to its own band further down.
  */
+import Image from "next/image";
+import Link from "next/link";
 import { usePrefs } from "@/components/providers/prefs";
 import { HERO, METRICS, METRICS_HEADING, METRICS_NOTE, SITE } from "@/lib/content";
 import { Icon } from "@/components/ui/icon";
 import { Arrow } from "@/components/ui/arrow";
 import { btn } from "@/components/ui/button";
-import { InsightBoard } from "./insight-board";
 
 function StatusNode() {
   const { t } = usePrefs();
   return (
-    <a
-      href="#contact"
-      className="glass group inline-flex items-center gap-2.5 rounded-card py-1.5 pe-3 ps-2.5 transition-colors duration-300 hover:border-accent"
+    <Link
+      href="/contact"
+      className="glass group inline-flex items-center gap-2.5 rounded-pill py-1.5 pe-3.5 ps-3 transition-colors duration-500 ease-physics hover:border-accent"
     >
       <span className="relative flex size-2 items-center justify-center" aria-hidden>
         <span className="status-ring absolute inset-0 rounded-full bg-success" />
         <span className="relative size-1.5 rounded-full bg-success" />
       </span>
-      <span className="font-mono text-micro uppercase tracking-[0.1em] text-text-secondary transition-colors duration-300 group-hover:text-text-primary">
+      <span className="font-mono text-micro uppercase tracking-[0.1em] text-text-secondary transition-colors duration-500 group-hover:text-text-primary">
         [{t(HERO.status)}]
       </span>
-    </a>
+    </Link>
+  );
+}
+
+function Portrait() {
+  const { t } = usePrefs();
+  return (
+    <div className="relative mx-auto w-full max-w-[26rem] lg:ms-auto lg:me-0">
+      {/* corner ticks — the blueprint motif, framing the subject */}
+      <span aria-hidden className="absolute -start-3 -top-3 size-6 border-s-2 border-t-2 border-accent/70" />
+      <span aria-hidden className="absolute -bottom-3 -end-3 size-6 border-b-2 border-e-2 border-accent/70" />
+
+      <div className="edge-light glass-strong relative aspect-[4/5] overflow-hidden rounded-panel shadow-panel">
+        <Image
+          src={SITE.portrait}
+          alt={t(HERO.portraitAlt)}
+          fill
+          priority
+          sizes="(min-width: 1024px) 26rem, 90vw"
+          className="object-cover object-[50%_12%]"
+        />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-navy/70 to-transparent" />
+      </div>
+
+      {HERO.chips.map((c, i) => (
+        <div
+          key={c.k.en}
+          className="glass float-y absolute rounded-card px-3 py-2 shadow-card"
+          style={
+            {
+              "--fd": `${i * 1.4}s`,
+              ...(i === 0 ? { insetInlineStart: "-1.25rem", bottom: "22%" } : { insetInlineEnd: "-1rem", top: "12%" }),
+            } as unknown as React.CSSProperties
+          }
+        >
+          <p className="font-mono text-caption uppercase tracking-[0.12em] text-accent-text">{t(c.k)}</p>
+          <p className="text-body-sm font-medium text-text-primary">{t(c.v)}</p>
+        </div>
+      ))}
+    </div>
   );
 }
 
 function MetricRow() {
-  const { t, ar } = usePrefs();
+  const { t } = usePrefs();
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-4">
@@ -59,7 +99,6 @@ function MetricRow() {
           </div>
         ))}
       </div>
-      <span className="sr-only">{ar ? "ملخص" : "Summary"}</span>
     </div>
   );
 }
@@ -69,16 +108,14 @@ export function Hero() {
   const lines = HERO.lines[lang];
 
   return (
-    <section id="top" className="relative flex min-h-svh flex-col overflow-hidden bg-surface-0 pt-14" style={{ isolation: "isolate" }}>
+    <section id="top" className="relative flex min-h-svh flex-col overflow-hidden pt-16" style={{ isolation: "isolate" }}>
       <div aria-hidden className="blueprint" />
-      <div aria-hidden className="blueprint-glow" />
 
-      <div className="container-wide relative z-10 grid flex-1 items-center gap-10 pb-8 pt-10 lg:grid-cols-[1.08fr_0.92fr] lg:pt-14">
-        {/* Left — typographic architecture */}
+      <div className="container-wide relative z-10 grid flex-1 items-center gap-12 pb-10 pt-10 lg:grid-cols-[1.1fr_0.9fr] lg:pt-14">
         <div className="flex flex-col gap-5">
           <div className="fade-up flex flex-wrap items-center gap-3" style={{ "--d": "500ms" } as React.CSSProperties}>
             <StatusNode />
-            <span className="hidden font-mono text-micro text-text-ghost lg:inline" dir="ltr">
+            <span className="hidden font-mono text-micro text-text-ghost xl:inline" dir="ltr">
               {HERO.query}
             </span>
           </div>
@@ -104,10 +141,10 @@ export function Hero() {
               {t(HERO.ctaCv)}
               <Icon name="arrow-down" size={14} className="transition-transform duration-300 group-hover:translate-y-0.5" />
             </a>
-            <a href="#contact" className={btn("secondary")}>
+            <Link href="/contact" className={btn("secondary")}>
               {t(HERO.ctaContact)}
               <Arrow size={14} className="transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-            </a>
+            </Link>
             <a href={SITE.github} target="_blank" rel="noopener noreferrer" className={btn("secondary")}>
               <Icon name="github" size={14} />
               {t(HERO.ctaGithub)}
@@ -115,19 +152,18 @@ export function Hero() {
           </div>
 
           <div className="fade-up flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-micro text-text-ghost" style={{ "--d": "1000ms" } as React.CSSProperties}>
-            <a href="#contact" className="underline decoration-border-default underline-offset-4 transition-colors hover:text-text-primary">
+            <Link href="/contact" className="underline decoration-border-default underline-offset-4 transition-colors hover:text-text-primary">
               {t(HERO.hiring)} <span aria-hidden className="inline-block rtl:-scale-x-100">→</span>
-            </a>
+            </Link>
             <span aria-hidden>·</span>
-            <a href="#work" className="underline decoration-border-default underline-offset-4 transition-colors hover:text-text-primary">
+            <Link href="/work" className="underline decoration-border-default underline-offset-4 transition-colors hover:text-text-primary">
               {lang === "ar" ? "أعمال مختارة" : "Selected work"} <span aria-hidden className="inline-block rtl:-scale-x-100">→</span>
-            </a>
+            </Link>
           </div>
         </div>
 
-        {/* Right — signature visual */}
         <div className="fade-up w-full" style={{ "--d": "500ms" } as React.CSSProperties}>
-          <InsightBoard />
+          <Portrait />
         </div>
       </div>
 
